@@ -90,8 +90,8 @@ function showCurrentVersion() {
 // Gérer les arguments de ligne de commande
 const args = process.argv.slice(2);
 
-// Si "add" est le premier argument, utiliser patch par défaut
-if (args[0] === 'add') {
+// Si "now" est le premier argument, utiliser patch par défaut
+if (args[0] === 'now') {
     const changelog = args.slice(1).join(' ');
     if (!changelog) {
         showCurrentVersion();
