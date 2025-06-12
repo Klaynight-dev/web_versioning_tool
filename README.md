@@ -39,7 +39,9 @@ votre-projet/
 | **🔧 PATCH** | `node version.js add "Description"` | Incrémente la version patch (1.0.0 → 1.0.1) |
 | **✨ MINOR** | `node version.js minor add "Nouvelle fonctionnalité"` | Incrémente la version minor (1.0.1 → 1.1.0) |
 | **🚨 MAJOR** | `node version.js major add "Changement majeur"` | Incrémente la version major (1.1.0 → 2.0.0) |
-| **📊 INFO** | `node version.js now` | Affiche la version actuelle |
+| **📊 INFO** | `node version.js version` | Affiche la version actuelle |
+| **📋 CHANGELOG** | `node version.js changelog` | Affiche le changelog actuel |
+| **🕒 NOW** | `node version.js now` | Affiche version et changelog |
 
 ### 💡 Exemples d'utilisation
 
@@ -47,7 +49,16 @@ votre-projet/
 # 🎬 Première utilisation - création automatique de version.json
 node version.js add "Version initiale du projet"
 
-# 🐛 Correction de bug
+# 🔍 Vérifier la version actuelle
+node version.js version
+
+# 📋 Vérifier le changelog actuel
+node version.js changelog
+
+# 🕒 Afficher version et changelog
+node version.js now
+
+# 🐛 Correction de bug (patch par défaut)
 node version.js add "Correction du bug d'affichage sur mobile"
 
 # ⭐ Nouvelle fonctionnalité
@@ -72,12 +83,12 @@ async function loadVersionInfo() {
         
         // 📝 Utiliser les données
         console.log('📌 Version actuelle:', versionData.version);
-        console.log('📅 Date de build:', versionData.buildDate);
+        console.log('📅 Date de build:', versionData.date);
         console.log('📋 Changelog:', versionData.changelog);
         
         // 🎨 Afficher dans le DOM
         document.getElementById('app-version').textContent = versionData.version;
-        document.getElementById('build-date').textContent = versionData.buildDate;
+        document.getElementById('build-date').textContent = versionData.date;
         document.getElementById('changelog').textContent = versionData.changelog;
         
         return versionData;
@@ -110,7 +121,7 @@ function getVersionInfo() {
 const version = getVersionInfo();
 if (version) {
     console.log(`📌 Version: ${version.version}`);
-    console.log(`📅 Date: ${version.buildDate}`);
+    console.log(`📅 Date: ${version.date}`);
     console.log(`📋 Changelog: ${version.changelog}`);
 }
 ```
@@ -193,7 +204,7 @@ function displayVersionHistory() {
                 
                 // 🎨 Mettre à jour les éléments du DOM
                 document.getElementById('app-version').textContent = versionData.version;
-                document.getElementById('build-date').textContent = versionData.buildDate;
+                document.getElementById('build-date').textContent = versionData.date;
                 document.getElementById('changelog').textContent = versionData.changelog;
                 
                 // 📜 Afficher l'historique
@@ -205,7 +216,8 @@ function displayVersionHistory() {
                     const typeEmoji = {
                         patch: '🔧',
                         minor: '✨',
-                        major: '🚨'
+                        major: '🚨',
+                        initial: '🎬'
                     };
                     
                     div.innerHTML = `
@@ -236,14 +248,14 @@ function displayVersionHistory() {
 ```json
 {
   "version": "1.2.3",               // 📌 Version actuelle
-  "buildDate": "2025-06-11",        // 📅 Date de build
+  "date": "2025-06-11",             // 📅 Date de build
   "changelog": "Description",       // 📋 Dernier changement
   "history": [                      // 🕒 Historique complet
     {
       "version": "1.2.3",
       "date": "2025-06-11",
       "changelog": "Description du changement",
-      "type": "patch"               // 🔧 patch | ✨ minor | 🚨 major
+      "type": "patch"               // 🔧 patch | ✨ minor | 🚨 major | 🎬 initial
     }
   ]
 }
@@ -260,6 +272,7 @@ L'outil suit la convention **Semantic Versioning (SemVer)** :
 | 🚨 **MAJOR** | Changements incompatibles | `1.0.0` → `2.0.0` |
 | ✨ **MINOR** | Nouvelles fonctionnalités compatibles | `1.0.0` → `1.1.0` |
 | 🔧 **PATCH** | Corrections de bugs | `1.0.0` → `1.0.1` |
+| 🎬 **INITIAL** | Version initiale du projet | `1.0.0` |
 
 ---
 
@@ -270,6 +283,7 @@ L'outil suit la convention **Semantic Versioning (SemVer)** :
 - ✅ **Mise à jour automatique** du fichier `index.html`
 - ✅ **Support SemVer** complet
 - ✅ **Validation** des arguments obligatoires
+- ✅ **Commandes flexibles** pour consulter version et changelog
 - ✅ **Messages d'aide** intégrés
 - ✅ **API JavaScript** simple et efficace
 

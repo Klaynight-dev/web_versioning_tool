@@ -8,7 +8,7 @@ function createVersionFileIfNotExists() {
     if (!fs.existsSync(versionFile)) {
         const initialVersion = {
             version: '1.0.0',
-            buildDate: new Date().toISOString().split('T')[0],
+            date: new Date().toISOString().split('T')[0],
             changelog: 'Version initiale',
             history: [{
                 version: '1.0.0',
@@ -37,6 +37,7 @@ function updateVersion(type = 'patch', changelog) {
     const versionData = JSON.parse(fs.readFileSync(versionFile, 'utf8'));
     const [major, minor, patch] = versionData.version.split('.').map(Number);
     
+    let newVersion;
     const normalizedType = type.toLowerCase();
     switch(normalizedType) {
         case 'major':
@@ -52,8 +53,9 @@ function updateVersion(type = 'patch', changelog) {
     }
     
     // Mettre à jour version.json avec le changelog
+    const currentDate = new Date().toISOString().split('T')[0];
     versionData.version = newVersion;
-    versionData.buildDate = new Date().toISOString().split('T')[0];
+    versionData.date = currentDate; // Changé de buildDate à date
     versionData.changelog = changelog;
     
     // Ajouter l'historique des versions
@@ -62,11 +64,11 @@ function updateVersion(type = 'patch', changelog) {
     }
     versionData.history.unshift({
         version: newVersion,
-        date: versionData.buildDate,
+        date: currentDate,
         changelog: changelog,
         type: type
     });
-    
+
     fs.writeFileSync(versionFile, JSON.stringify(versionData, null, 2));
     
     // Mettre à jour index.html
@@ -87,11 +89,30 @@ function showCurrentVersion() {
     console.log(`Version actuelle: ${versionData.version}`);
 }
 
+function showCurrentChangelog() {
+    createVersionFileIfNotExists();
+    const versionData = JSON.parse(fs.readFileSync(versionFile, 'utf8'));
+    console.log(`Changelog actuel: ${versionData.changelog}`);
+}
+
 // Gérer les arguments de ligne de commande
 const args = process.argv.slice(2);
 
 // Si "now" est le premier argument, utiliser patch par défaut
 if (args[0] === 'now') {
+    const changelog = args.slice(1).join(' ');
+    if (!changelog) {
+        showCurrentVersion();
+        showCurrentChangelog();
+        process.exit(0);
+    }
+    updateVersion('patch', changelog);
+} else if (args[0] === 'version') {
+    showCurrentVersion();
+} else if (args[0] === 'changelog') {
+    showCurrentChangelog();
+} else if (args[0] === 'add') {
+    // Format: node version.js add "changelog" (patch par défaut)
     const changelog = args.slice(1).join(' ');
     if (!changelog) {
         showCurrentVersion();
